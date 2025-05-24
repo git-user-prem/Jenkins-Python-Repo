@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "jenkins-python-demo"
-        IMAGE_TAG = "p1"
+        IMAGE_NAME = "jenkins-python-push"
+        IMAGE_TAG = "p2"
     }
 
     stages {
@@ -20,7 +20,16 @@ pipeline {
                 }
             }
         }
-
+        stage('Push image') {
+            steps {
+                script {
+                     docker.withRegistry('https://registry.hub.docker.com', 'git') {
+                     app.push("${env.BUILD_NUMBER}")
+                     app.push("latest")
+                }
+            }
+        }
+     }
          stage('List Docker Images') {
              steps {
                  sh 'docker images'
